@@ -1,16 +1,4 @@
 const express = require('express');
-const app = express();
-
-app.get('/', (req, res) => {
-  res.send('Servidor funcionando!');
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
-
-const express = require('express');
 const multer = require('multer');
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
@@ -28,7 +16,7 @@ app.post('/convert', upload.single('audio'), (req, res) => {
   const outputPath = `converted/${Date.now()}.ogg`;
 
   ffmpeg(inputPath)
-    .outputOptions('-c:a libopus') // usa codec opus
+    .outputOptions('-c:a libopus')
     .toFormat('ogg')
     .on('end', () => {
       res.download(outputPath, 'converted.ogg', () => {
@@ -37,7 +25,7 @@ app.post('/convert', upload.single('audio'), (req, res) => {
       });
     })
     .on('error', (err) => {
-      console.error(err);
+      console.error('Erro ao converter:', err);
       res.status(500).send('Erro na conversão.');
     })
     .save(outputPath);
