@@ -13,10 +13,16 @@ app.get('/', (req, res) => {
 
 app.post('/convert', upload.single('audio'), (req, res) => {
   const inputPath = req.file.path;
-  const outputPath = `converted/${Date.now()}.ogg`;
+  const outputFilename = `${Date.now()}.ogg`;
+  const outputPath = path.join('converted', outputFilename);
 
   ffmpeg(inputPath)
-    .outputOptions('-c:a libopus')
+    .outputOptions([
+      '-acodec libopus',
+      '-b:a 64k',
+      '-vbr on',
+      '-compression_level 10'
+    ])
     .toFormat('ogg')
     .on('end', () => {
       res.download(outputPath, 'converted.ogg', () => {
