@@ -7,17 +7,17 @@ const path = require('path');
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
+// Garante que o diretório 'converted' existe
+const convertedDir = path.join(__dirname, 'converted');
+if (!fs.existsSync(convertedDir)) {
+  fs.mkdirSync(convertedDir);
+}
+
 app.get('/', (req, res) => {
   res.send('Servidor funcionando!');
 });
 
 app.post('/convert', upload.single('audio'), (req, res) => {
-  // Verificação de segurança
-  if (!req.file) {
-    console.error('Nenhum arquivo foi enviado.');
-    return res.status(400).send('Nenhum arquivo foi enviado.');
-  }
-
   console.log('Arquivo recebido:', req.file);
 
   const inputPath = req.file.path;
