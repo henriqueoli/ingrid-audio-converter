@@ -12,6 +12,14 @@ app.get('/', (req, res) => {
 });
 
 app.post('/convert', upload.single('audio'), (req, res) => {
+  // Verificação de segurança
+  if (!req.file) {
+    console.error('Nenhum arquivo foi enviado.');
+    return res.status(400).send('Nenhum arquivo foi enviado.');
+  }
+
+  console.log('Arquivo recebido:', req.file);
+
   const inputPath = req.file.path;
   const outputFilename = `${Date.now()}.ogg`;
   const outputPath = path.join('converted', outputFilename);
